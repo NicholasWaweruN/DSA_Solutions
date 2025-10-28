@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Practice/Practice.csproj" />
+  <Project Path="PracticeTests/PracticeTests.csproj" Id="8f0d0488-1f85-4045-b08d-e2e271201b16" />
+</Solution>
