@@ -9,6 +9,7 @@ namespace Practice
         public static void Main(string[] args)
         {
             IStringsAndArrays stringsAndArrays = new StringsAndArrays();
+            IArraies arraies = new Arraies();
             string choice = string.Empty;
 
             Console.WriteLine("Welcome to the Strings and Arrays Practice Suite!");
@@ -37,7 +38,6 @@ namespace Practice
                     Console.WriteLine("20: Character Occurrence Count");
                     Console.WriteLine("25: Reverse Each Word (Keep Same Order)");
                     Console.WriteLine("26: Decode a string");
-
                     Console.WriteLine("\n--- ARRAY / NUMBER OPERATIONS ---");
                     Console.WriteLine("7: Two-Sum");
                     Console.WriteLine("8: Remove Duplicates from Words");
@@ -46,7 +46,7 @@ namespace Practice
                     Console.WriteLine("22: Average of All Elements");
                     Console.WriteLine("23: Count Odd and Even Numbers");
                     Console.WriteLine("24: Second Largest Number");
-
+          
                     Console.WriteLine("Q: Quit");
                     Console.Write("\nEnter your choice: ");
 
@@ -235,6 +235,10 @@ namespace Practice
                             RunWithString("Decode string like “3[a2[b]]” → “abbabbabb”:", s =>
                                 stringsAndArrays.DecodeString(s));
                             break;
+                        //case "27":
+                        //    RunWithString("Decode string like “3[a2[b]]” → “abbabbabb”:", s =>
+                        //        arraies.TwoSum (nums,target ));
+                        //    break;
 
                         default:
                             Console.WriteLine("⚠️ Invalid choice. Try again.");

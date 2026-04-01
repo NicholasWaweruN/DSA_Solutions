@@ -102,7 +102,7 @@ namespace Practice.StringAndArrays
             var words = str.ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var word in words)
-                sb.Append(char.ToUpper(word[0])).Append(word.Substring(1)).Append(' ');
+                sb.Append(char.ToUpper(word[0])).Append(word.AsSpan(1)).Append(' ');
 
             return sb.ToString().TrimEnd();
         }
@@ -322,9 +322,9 @@ namespace Practice.StringAndArrays
             {
                 int sum = nums[left] + nums[right];
                 if (sum == target)
-                    return new int[] { nums[left], nums[right] };
+                    return [nums[left], nums[right]];
                 if (sum > target)
-                    right--;
+                    right--; 
                 else
                     left++;
             }
@@ -369,7 +369,6 @@ namespace Practice.StringAndArrays
                 if (num < min) min = num;
                 if (num > max) max = num;
             }
-
             result.Add("max", max);
             result.Add("min", min);
 
@@ -479,6 +478,7 @@ namespace Practice.StringAndArrays
             return max;
 
         }
+
 
 
     }
