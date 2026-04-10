@@ -324,7 +324,7 @@ namespace Practice.StringAndArrays
                 if (sum == target)
                     return [nums[left], nums[right]];
                 if (sum > target)
-                    right--; 
+                    right--;
                 else
                     left++;
             }
@@ -388,11 +388,11 @@ namespace Practice.StringAndArrays
 
             return sum / numbers.Length;
         }
-       // 5. Count even and odd numbers
+        // 5. Count even and odd numbers
 
-        public Dictionary<string,int> CountOddAndEvenNumbers(int[] numbers)
+        public Dictionary<string, int> CountOddAndEvenNumbers(int[] numbers)
         {
-            int odds= 0;
+            int odds = 0;
             int even = 0;
             var dict = new Dictionary<string, int>();
             foreach (var no in numbers)
@@ -401,7 +401,7 @@ namespace Practice.StringAndArrays
                 {
                     even++;
                 }
-                else 
+                else
                 {
                     odds++;
                 }
@@ -415,13 +415,13 @@ namespace Practice.StringAndArrays
         }
         //6. Find the second largest number
 
-        public int SecondLargestNumber(int [] numbers)
+        public int SecondLargestNumber(int[] numbers)
         {
-            if(numbers == null || numbers.Length < 2) return 0;
+            if (numbers == null || numbers.Length < 2) return 0;
 
             var nth = numbers.OrderByDescending(x => x).ToList().Skip(1);
             return nth.FirstOrDefault();
-           
+
         }
 
         //   // Reverse each word in a sentence(but keep word order)
@@ -447,10 +447,10 @@ namespace Practice.StringAndArrays
         {
             var arrayresult = input.ToCharArray();
             int left = 0;
-            int right = arrayresult.Length-1;
+            int right = arrayresult.Length - 1;
             var sb = new StringBuilder();
 
-            while (left < right) 
+            while (left < right)
             {
                 if (char.IsDigit(arrayresult[left]))
                 {
@@ -474,12 +474,145 @@ namespace Practice.StringAndArrays
         //1.	Find maximum element in an array
         public int MaximumElement(int[] numbers)
         {
-           var max = numbers.Max();
+            var max = numbers.Max();
             return max;
 
         }
 
+        public int Sum(int x)
+        {
+            throw new NotImplementedException();
+        }
 
+
+        //1. Find Maximum Element
+
+        public int MaximumNumber(int[] elements)
+        {
+            if(elements.Length == 0)
+                return 0;
+            int maxnum = int.MinValue;
+            for (int i = 0; i < elements.Length; i++) 
+            {
+                var currentValue = elements[i];
+                maxnum = Math.Max(maxnum, currentValue);
+            }
+            return maxnum;
+        }
+        public int MaximumNumber2(int[] elements)
+        {
+           return elements.Max();
+
+        }
+
+        public int MinimumNumber2(int[] elements)
+        {
+            return elements.Min();
+        }
+        public int MinimumNumber(int[] elements)
+        {
+            int maxnum = int.MaxValue;
+            for (int i = 0; i < elements.Length; i++)
+            {
+                var currentValue = elements[i];
+                maxnum = Math.Min(maxnum, currentValue);
+            }
+            return maxnum;
+        }
+
+        public  int[] ReverseAnArray(int[] elements)
+        {
+            var reseversed = elements.Reverse().ToArray();
+            return reseversed;
+        }
+
+        public int[] ReverseAnArray2(int[] elements)
+        {
+            int right = elements.Length;
+            var lists = new List<int>();
+
+            for (int i = right;i <= right;i--)
+            {
+                lists.Add(elements[i]);
+            }
+            return lists.ToArray();
+        }
+
+        public bool CheckifArrayisSorted(int[] elements)
+        {
+            int currentValue = elements[0];
+            for (int i = 1; i < elements.Length; i++)
+            {
+                if(currentValue !> elements[i])
+                    return false;
+                currentValue = elements[i];    
+            }
+            return true;
+        }
+
+        public int SecondLargestElement(int[] elements)
+        {
+            var secondlargest = elements.OrderBy(x => x).Take(2).OrderDescending().FirstOrDefault();
+            return secondlargest;           
+        }
+        //Remove Duplicates
+
+        public int[] RemoveDuplicates(int[] elements)
+        {
+            var set = new HashSet<int>();
+
+            foreach (int element in elements)
+            {
+                set.Add(element);
+            }
+            return set.ToArray();
+        }
+
+        //Find Missing Number
+
+        public int FindMissingNumber(int[] elements)
+        {
+            var currentNumber = elements[0];
+            var missingNumber = 0;
+            for (int i = 1; i < elements.Length; i++)
+            {
+                if (currentNumber - elements[i] != 1)
+                    missingNumber = elements[i] +1;
+                currentNumber = elements[i];
+
+            }
+            return missingNumber;
+        }
+
+
+        public int FindMissingNumber2(int[] elements)
+        {
+            int n = elements.Length + 1;
+            int expectedSum = n * (n + 1) / 2;
+            int actualSum = elements.Sum();
+
+            return expectedSum - actualSum;
+        }
+        //Two Sum Problem
+        public int[] TwoSumProblem(int[] elements,int target)
+        {
+            var map = new Dictionary<int, int>();
+
+            for (int i = 0; i < elements.Length; i++)
+            {
+                var complete = target - elements[i];
+                if (map.ContainsKey(complete))
+                {
+                    return new int[] { complete, elements[i] };
+                }
+                    map.TryAdd(elements[i],i);
+            }
+            return Array.Empty<int>();
+        }
+
+        //Subarray Sum Equals K
+
+       ///
 
     }
 }

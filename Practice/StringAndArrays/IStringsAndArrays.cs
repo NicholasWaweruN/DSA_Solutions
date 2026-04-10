@@ -32,5 +32,7 @@ namespace Practice.StringAndArrays
         string ReverseWordsKeepSameOrder(string sentence);
         string DecodeString(string input);
         int MaximumElement(int[] numbers);
+
+        int Sum(int x);
     }
 }

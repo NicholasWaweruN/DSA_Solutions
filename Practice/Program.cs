@@ -1,5 +1,8 @@
 ﻿using Practice.StringAndArrays;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Practice
@@ -11,6 +14,7 @@ namespace Practice
             IStringsAndArrays stringsAndArrays = new StringsAndArrays();
             IArraies arraies = new Arraies();
             string choice = string.Empty;
+
 
             Console.WriteLine("Welcome to the Strings and Arrays Practice Suite!");
 
@@ -37,16 +41,23 @@ namespace Practice
                     Console.WriteLine("19: Convert String to Title Case");
                     Console.WriteLine("20: Character Occurrence Count");
                     Console.WriteLine("25: Reverse Each Word (Keep Same Order)");
-                    Console.WriteLine("26: Decode a string");
+                    Console.WriteLine("26: Decode a String");
+
                     Console.WriteLine("\n--- ARRAY / NUMBER OPERATIONS ---");
-                    Console.WriteLine("7: Two-Sum");
+                    Console.WriteLine("7: Two Sum (One Pair)");
                     Console.WriteLine("8: Remove Duplicates from Words");
                     Console.WriteLine("11: Find Maximum Number");
                     Console.WriteLine("21: Maximum and Minimum Elements");
                     Console.WriteLine("22: Average of All Elements");
                     Console.WriteLine("23: Count Odd and Even Numbers");
                     Console.WriteLine("24: Second Largest Number");
-          
+                    Console.WriteLine("27: Recursive Sum");
+                    Console.WriteLine("28: Two Sum - Count All Pairs");
+                    Console.WriteLine("29: Two Sum - Unique Value Pairs");
+                    Console.WriteLine("30: Two Sum - All Index Pairs");
+                    Console.WriteLine("31: Two Sum - Closest Pair");
+                    Console.WriteLine("32: Subarray Sum Equals K");
+
                     Console.WriteLine("Q: Quit");
                     Console.Write("\nEnter your choice: ");
 
@@ -54,13 +65,13 @@ namespace Practice
 
                     if (choice.Equals("q", StringComparison.OrdinalIgnoreCase))
                     {
-                        Console.WriteLine("\nExiting the program. Goodbye! 👋");
+                        Console.WriteLine("\nExiting the program. Goodbye!");
                         break;
                     }
 
                     if (string.IsNullOrEmpty(choice))
                     {
-                        Console.WriteLine("⚠️ Please enter a valid choice.");
+                        Console.WriteLine("Please enter a valid choice.");
                         continue;
                     }
 
@@ -74,13 +85,15 @@ namespace Practice
                         case "2":
                             RunWithString("Enter a string to check palindrome:", s =>
                                 stringsAndArrays.IsPalindrome(s)
-                                    ? "✅ It’s a palindrome!" : "❌ Not a palindrome.");
+                                    ? "It’s a palindrome!"
+                                    : "Not a palindrome.");
                             break;
 
                         case "3":
                             RunWithString("Enter a string to check for unique characters:", s =>
                                 stringsAndArrays.HasAllUniqueCharacters(s)
-                                    ? "✅ All characters are unique." : "❌ There are duplicates.");
+                                    ? "All characters are unique."
+                                    : "There are duplicates.");
                             break;
 
                         case "4":
@@ -99,19 +112,20 @@ namespace Practice
                             break;
 
                         case "7":
-                            Console.Write("Enter target sum: ");
-                            if (!decimal.TryParse(Console.ReadLine(), out decimal target))
+                            RunWithNumbers("Enter numbers separated by commas:", numbers =>
                             {
-                                Console.WriteLine("⚠️ Invalid input. Please enter a valid number.");
-                                break;
-                            }
+                                Console.Write("Enter target sum: ");
+                                if (!int.TryParse(Console.ReadLine(), out int target))
+                                {
+                                    return "Invalid target.";
+                                }
 
-                            int[] nums = { 1, 2, 3, 4, 5, 6, 8, 9, 10 };
-                            var res = stringsAndArrays.Twosum(nums, target);
-                            if (res.Length == 0)
-                                Console.WriteLine("No pair found that sums to the target.");
-                            else
-                                Console.WriteLine($"Pair found: [{res[0]}, {res[1]}]");
+                                var res = TwoSumOnePair(numbers, target);
+
+                                return res.Length == 0
+                                    ? "No pair found that sums to the target."
+                                    : $"Indices found: [{res[0]}, {res[1]}]";
+                            });
                             break;
 
                         case "8":
@@ -131,8 +145,9 @@ namespace Practice
                             RunWithString("Enter a string to count each vowel:", s =>
                             {
                                 var dict = stringsAndArrays.EachCountVowels(s);
-                                return dict.Count == 0 ? "No vowels found." :
-                                    string.Join(", ", dict.Select(kv => $"{kv.Key}: {kv.Value}"));
+                                return dict.Count == 0
+                                    ? "No vowels found."
+                                    : string.Join(", ", dict.Select(kv => $"{kv.Key}: {kv.Value}"));
                             });
                             break;
 
@@ -172,7 +187,8 @@ namespace Practice
                         case "17":
                             RunWithString("Enter first string:", "Enter second string:", (s1, s2) =>
                                 stringsAndArrays.IsStringsAnagrams(s1, s2)
-                                    ? "✅ They are anagrams!" : "❌ Not anagrams.");
+                                    ? "They are anagrams!"
+                                    : "Not anagrams.");
                             break;
 
                         case "18":
@@ -232,27 +248,131 @@ namespace Practice
                             break;
 
                         case "26":
-                            RunWithString("Decode string like “3[a2[b]]” → “abbabbabb”:", s =>
+                            RunWithString("Decode string like 3[a2[b]] -> abbabbabb:", s =>
                                 stringsAndArrays.DecodeString(s));
                             break;
-                        //case "27":
-                        //    RunWithString("Decode string like “3[a2[b]]” → “abbabbabb”:", s =>
-                        //        arraies.TwoSum (nums,target ));
-                        //    break;
+
+                        case "27":
+                            RunWithString("Enter a number for recursive sum:", s =>
+                            {
+                                if (!int.TryParse(s, out int n))
+                                    return "Invalid number.";
+
+                                return $"Sum: {Sum(n)}";
+                            });
+                            break;
+
+                        case "28":
+                            RunWithNumbers("Enter numbers separated by commas:", numbers =>
+                            {
+                                Console.Write("Enter target: ");
+                                if (!int.TryParse(Console.ReadLine(), out int target))
+                                {
+                                    return "Invalid target.";
+                                }
+
+                                return $"Total pairs count: {TwoSumCount(numbers, target)}";
+                            });
+                            break;
+
+                        case "29":
+                            RunWithNumbers("Enter numbers separated by commas:", numbers =>
+                            {
+                                Console.Write("Enter target: ");
+                                if (!int.TryParse(Console.ReadLine(), out int target))
+                                {
+                                    return "Invalid target.";
+                                }
+
+                                var result = TwoSumAllUniquePairs(numbers, target);
+
+                                return result.Count == 0
+                                    ? "No pairs found."
+                                    : $"Unique value pairs: {string.Join(", ", result.Select(x => $"({x.Item1}, {x.Item2})"))}";
+                            });
+                            break;
+
+                        case "30":
+                            RunWithNumbers("Enter numbers separated by commas:", numbers =>
+                            {
+                                Console.Write("Enter target: ");
+                                if (!int.TryParse(Console.ReadLine(), out int target))
+                                {
+                                    return "Invalid target.";
+                                }
+
+                                var result = TwoSumAllIndexPairs(numbers, target);
+
+                                return result.Count == 0
+                                    ? "No pairs found."
+                                    : $"Index pairs: {string.Join(", ", result.Select(x => $"({x.Item1}, {x.Item2})"))}";
+                            });
+                            break;
+
+                        case "31":
+                            RunWithNumbers("Enter numbers separated by commas:", numbers =>
+                            {
+                                Console.Write("Enter target: ");
+                                if (!int.TryParse(Console.ReadLine(), out int target))
+                                {
+                                    return "Invalid target.";
+                                }
+
+                                var result = TwoSumClosest(numbers, target);
+                                return $"Closest pair: ({result.Item1}, {result.Item2})";
+                            });
+                            break;
+
+                        case "32":
+                            RunWithNumbers("Enter numbers separated by commas:", numbers =>
+                            {
+                                Console.Write("Enter target sum (K): ");
+                                if (!int.TryParse(Console.ReadLine(), out int k))
+                                {
+                                    return "Invalid target.";
+                                }
+
+                                return $"Subarrays count: {SubarraySumEqualsK(numbers, k)}";
+                            });
+                            break;
 
                         default:
-                            Console.WriteLine("⚠️ Invalid choice. Try again.");
+                            Console.WriteLine("Invalid choice. Try again.");
                             break;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"❌ Unexpected error: {ex.Message}");
+                    Console.WriteLine($"Unexpected error: {ex.Message}");
                 }
             }
         }
 
         // --- Helpers ---
+        public static void File2()
+        {
+            var path = "C:\\" + "Directory";
+            var directory = new DirectoryInfo(path);
+
+            if (!directory.Exists)
+            {
+                directory.Create();
+            }
+
+            if (!Directory.Exists(Path.Combine(path, "Home1")))
+                directory.CreateSubdirectory("Home1");
+
+            if (!Directory.Exists(Path.Combine(path, "Home2")))
+                directory.CreateSubdirectory("Home2");
+
+            if (!Directory.Exists(Path.Combine(path, "Home3")))
+                directory.CreateSubdirectory("Home3");
+
+            directory.CreationTime = DateTime.Now.AddDays(1);
+
+            if (!Directory.Exists(Path.Combine(path, "Home4")))
+                directory.CreateSubdirectory("Home4");
+        }
 
         private static void RunWithString(string prompt, Func<string, string> operation)
         {
@@ -261,7 +381,7 @@ namespace Practice
 
             if (string.IsNullOrEmpty(input))
             {
-                Console.WriteLine("⚠️ Input cannot be empty.");
+                Console.WriteLine("Input cannot be empty.");
                 return;
             }
 
@@ -271,7 +391,7 @@ namespace Practice
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error: {ex.Message}");
+                Console.WriteLine($"Error: {ex.Message}");
             }
         }
 
@@ -279,17 +399,19 @@ namespace Practice
         {
             Console.Write(prompt1 + " ");
             var input1 = (Console.ReadLine() ?? string.Empty).Trim();
+
             if (string.IsNullOrEmpty(input1))
             {
-                Console.WriteLine("⚠️ Input cannot be empty.");
+                Console.WriteLine("Input cannot be empty.");
                 return;
             }
 
             Console.Write(prompt2 + " ");
             var input2 = (Console.ReadLine() ?? string.Empty).Trim();
+
             if (string.IsNullOrEmpty(input2))
             {
-                Console.WriteLine("⚠️ Input cannot be empty.");
+                Console.WriteLine("Input cannot be empty.");
                 return;
             }
 
@@ -299,7 +421,7 @@ namespace Practice
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error: {ex.Message}");
+                Console.WriteLine($"Error: {ex.Message}");
             }
         }
 
@@ -310,22 +432,215 @@ namespace Practice
 
             if (string.IsNullOrEmpty(input))
             {
-                Console.WriteLine("⚠️ Input cannot be empty.");
+                Console.WriteLine("Input cannot be empty.");
                 return;
             }
 
             try
             {
-                var numbers = input.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                                   .Select(int.Parse).ToArray();
+                var numbers = input
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(x => int.Parse(x.Trim()))
+                    .ToArray();
+
                 Console.WriteLine(operation(numbers));
             }
             catch
             {
-                Console.WriteLine("⚠️ Invalid number format.");
+                Console.WriteLine("Invalid number format.");
             }
         }
-        //10. Implement a custom string compression (“aaabb” → “a3b2”)
-    
+
+        // --- Generic / Practice ---
+        public static ArrayList TestsResponseService()
+        {
+            var obj = new object();
+
+            var arraylist = new ArrayList();
+            arraylist.Add("one");
+            arraylist.Add(1);
+            arraylist.Add(obj);
+
+            return arraylist;
+        }
+
+        public static List<object> TestsResponseService(List<object> list)
+        {
+            list.Add("one");
+            list.Add(1);
+
+            return list;
+        }
+
+        public class Response<T>
+        {
+            public int Status { get; set; }
+            public string Message { get; set; } = string.Empty;
+            public T? Data { get; set; }
+        }
+
+        public static int Sum(int n)
+        {
+            if (n == 0)
+                return 0;
+
+            return n + Sum(n - 1);
+        }
+
+        // --- Two Sum Variants ---
+
+        public static int[] TwoSumOnePair(int[] nums, int target)
+        {
+            var map = new Dictionary<int, int>();
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                int complement = target - nums[i];
+
+                if (map.TryGetValue(complement, out var index))
+                {
+                    return new[] { index, i };
+                }
+
+                map[nums[i]] = i;
+            }
+
+            return Array.Empty<int>();
+        }
+
+        public static int TwoSumCount(int[] nums, int target)
+        {
+            var map = new HashSet<int>();
+            var result = new List<(int,int)>();    
+            int count = 0;
+
+            foreach (var num in nums)
+            {
+                int complement = target - num;
+
+                if (map.Contains(complement))
+                {
+                    result.Add((num, complement));
+                    count++;
+                }
+
+                map.Add(complement);
+            }
+
+            return result.Select(x => x.Item2).Sum();
+        }
+
+        public static HashSet<(int, int)> TwoSumAllUniquePairs(int[] nums, int target)
+        {
+            var seen = new HashSet<int>();
+            var result = new HashSet<(int, int)>();
+
+            foreach (var num in nums)
+            {
+                int complement = target - num;
+
+                if (seen.Contains(complement))
+                {
+                    result.Add((Math.Min(num, complement), Math.Max(num, complement)));
+                }
+
+                seen.Add(num);
+            }
+
+            return result;
+        }
+
+        public static List<(int, int)> TwoSumAllIndexPairs(int[] nums, int target)
+        {
+            var map = new Dictionary<int, List<int>>();
+            var result = new List<(int, int)>();
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                int complement = target - nums[i];
+
+                if (map.TryGetValue(complement, out var indices))
+                {
+                    foreach (var j in indices)
+                    {
+                        result.Add((j, i));
+                    }
+                }
+
+                if (!map.ContainsKey(nums[i]))
+                {
+                    map[nums[i]] = new List<int>();
+                }
+
+                map[nums[i]].Add(i);
+            }
+
+            return result;
+        }
+
+        public static (int, int) TwoSumClosest(int[] nums, int target)
+        {
+            if (nums == null || nums.Length < 2)
+            {
+                return (0, 0);
+            }
+
+            var sorted = nums.ToArray();
+            Array.Sort(sorted);
+
+            int left = 0;
+            int right = sorted.Length - 1;
+            int minDiff = int.MaxValue;
+            (int, int) result = (sorted[left], sorted[right]);
+
+            while (left < right)
+            {
+                int sum = sorted[left] + sorted[right];
+                int diff = Math.Abs(target - sum);
+
+                if (diff < minDiff)
+                {
+                    minDiff = diff;
+                    result = (sorted[left], sorted[right]);
+                }
+
+                if (sum < target)
+                {
+                    left++;
+                }
+                else
+                {
+                    right--;
+                }
+            }
+
+            return result;
+        }
+
+        // --- Prefix Sum / Advanced ---
+        public static int SubarraySumEqualsK(int[] nums, int k)
+        {
+            var map = new Dictionary<int, int>
+            {
+                [0] = 1
+            };
+
+            int sum = 0;
+            int count = 0;
+
+            foreach (var num in nums)
+            {
+                sum += num;
+
+                if (map.TryGetValue(sum - k, out var freq))
+                {
+                    count += freq;
+                }
+
+                map[sum] = map.GetValueOrDefault(sum, 0) + 1;
+            }
+
+            return count;
+        }
     }
 }
