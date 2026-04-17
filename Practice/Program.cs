@@ -1,393 +1,139 @@
-﻿using Practice.StringAndArrays;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+namespace Practice;
 
-namespace Practice
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        Console.OutputEncoding = Encoding.UTF8;     
+
+        while (true)
         {
-            IStringsAndArrays stringsAndArrays = new StringsAndArrays();
-            IArraies arraies = new Arraies();
-            string choice = string.Empty;
+            ShowMenuMain();
+            Console.Write("\nEnter choice: ");
+            var choice = Console.ReadLine()?.Trim();
 
+            if (string.Equals(choice, "Q", StringComparison.OrdinalIgnoreCase))
+                break;
 
-            Console.WriteLine("Welcome to the Strings and Arrays Practice Suite!");
-
-            while (true)
+            try
             {
-                try
+                switch (choice)
                 {
-                    Console.WriteLine("\n--- STRING OPERATIONS ---");
-                    Console.WriteLine("1: Reverse a String");
-                    Console.WriteLine("2: Check for Palindrome");
-                    Console.WriteLine("3: Check for Unique Characters");
-                    Console.WriteLine("4: Reverse a String (Two Pointer)");
-                    Console.WriteLine("5: Reverse Words (Simple Method)");
-                    Console.WriteLine("6: Reverse Words (Two Pointer)");
-                    Console.WriteLine("9: Count Vowels");
-                    Console.WriteLine("10: Each Vowel Count");
-                    Console.WriteLine("12: Count Vowels and Consonants");
-                    Console.WriteLine("13: Reverse a String (Manual)");
-                    Console.WriteLine("14: First Non-Repeating Character");
-                    Console.WriteLine("15: Remove All Whitespaces");
-                    Console.WriteLine("16: Replace Vowels with *");
-                    Console.WriteLine("17: Check if Two Strings are Anagrams");
-                    Console.WriteLine("18: Find the Longest Word in a Sentence");
-                    Console.WriteLine("19: Convert String to Title Case");
-                    Console.WriteLine("20: Character Occurrence Count");
-                    Console.WriteLine("25: Reverse Each Word (Keep Same Order)");
-                    Console.WriteLine("26: Decode a String");
-
-                    Console.WriteLine("\n--- ARRAY / NUMBER OPERATIONS ---");
-                    Console.WriteLine("7: Two Sum (One Pair)");
-                    Console.WriteLine("8: Remove Duplicates from Words");
-                    Console.WriteLine("11: Find Maximum Number");
-                    Console.WriteLine("21: Maximum and Minimum Elements");
-                    Console.WriteLine("22: Average of All Elements");
-                    Console.WriteLine("23: Count Odd and Even Numbers");
-                    Console.WriteLine("24: Second Largest Number");
-                    Console.WriteLine("27: Recursive Sum");
-                    Console.WriteLine("28: Two Sum - Count All Pairs");
-                    Console.WriteLine("29: Two Sum - Unique Value Pairs");
-                    Console.WriteLine("30: Two Sum - All Index Pairs");
-                    Console.WriteLine("31: Two Sum - Closest Pair");
-                    Console.WriteLine("32: Subarray Sum Equals K");
-
-                    Console.WriteLine("Q: Quit");
-                    Console.Write("\nEnter your choice: ");
-
-                    choice = (Console.ReadLine() ?? string.Empty).Trim();
-
-                    if (choice.Equals("q", StringComparison.OrdinalIgnoreCase))
-                    {
-                        Console.WriteLine("\nExiting the program. Goodbye!");
+                    case "1":
+                        RunString("Enter text:", input => $"Reversed: {StringAlgorithms.ReverseString(input)}");
                         break;
-                    }
+                    case "2":
+                        RunString("Enter text:", input => StringAlgorithms.IsPalindrome(input) ? "Palindrome" : "Not palindrome");
+                        break;
+                    case "3":
+                        RunString("Enter text:", input => StringAlgorithms.HasAllUniqueCharacters(input) ? "All characters are unique" : "Contains duplicates");
+                        break;
+                    case "4":
+                        RunString("Enter sentence:", input => $"Words reversed: {StringAlgorithms.ReverseWordsSimpleMethod(input)}");
+                        break;
+                    case "5":
+                        RunString("Enter sentence:", input => $"Title case: {StringAlgorithms.TitleCase(input)}");
+                        break;
+                    case "6":
+                        RunString("Enter text:", input => $"Vowels: {StringAlgorithms.CountVowels(input)}");
+                        break;
+                    case "7":
+                        RunNumbers("Enter comma-separated numbers:", numbers =>
+                        {
+                            Console.Write("Enter target: ");
+                            if (!int.TryParse(Console.ReadLine(), out var target))
+                                return "Invalid target";
 
-                    if (string.IsNullOrEmpty(choice))
-                    {
-                        Console.WriteLine("Please enter a valid choice.");
-                        continue;
-                    }
+                            var result = ArrayAlgorithms.TwoSumIndices(numbers, target);
+                            return result.Length == 0 ? "No pair found" : $"Indices: [{result[0]}, {result[1]}]";
+                        });
+                        break;
+                    case "8":
+                        RunNumbers("Enter comma-separated numbers:", numbers => $"Maximum: {ArrayAlgorithms.MaximumElement(numbers)}");
+                        break;
+                    case "9":
+                        RunNumbers("Enter comma-separated numbers:", numbers => $"Second largest: {ArrayAlgorithms.SecondLargestNumber(numbers)}");
+                        break;
+                    case "10":
+                        RunNumbers("Enter comma-separated numbers:", numbers =>
+                        {
+                            var result = ArrayAlgorithms.MaximumAndMinimumElements(numbers);
+                            return $"Max: {result["max"]}, Min: {result["min"]}";
+                        });
+                        break;
+                    case "11":
+                        RunNumbers("Enter comma-separated numbers:", numbers =>
+                        {
+                            Console.Write("Enter window size k: ");
+                            if (!int.TryParse(Console.ReadLine(), out var k))
+                                return "Invalid k";
 
-                    switch (choice)
-                    {
-                        case "1":
-                            RunWithString("Enter a string to reverse:", s =>
-                                $"Reversed: {stringsAndArrays.ReverseString(s)}");
-                            break;
+                            return $"Maximum window sum: {SlidingWindowAlgorithms.MaximumSubArraySizeK(numbers, k)}";
+                        });
+                        break;
+                    case "12":
+                        RunNumbers("Enter comma-separated numbers:", numbers =>
+                        {
+                            Console.Write("Enter window size k: ");
+                            if (!int.TryParse(Console.ReadLine(), out var k))
+                                return "Invalid k";
+                            Console.Write("Enter target: ");
+                            if (!int.TryParse(Console.ReadLine(), out var target))
+                                return "Invalid target";
 
-                        case "2":
-                            RunWithString("Enter a string to check palindrome:", s =>
-                                stringsAndArrays.IsPalindrome(s)
-                                    ? "It’s a palindrome!"
-                                    : "Not a palindrome.");
-                            break;
+                            return $"Count: {SlidingWindowAlgorithms.CountSubarraysSizeKWithSumAtLeastTarget(numbers, k, target)}";
+                        });
+                        break;
+                    case "13":
+                        RunString("Enter text:", input =>
+                        {
+                            Console.Write("Enter window size k: ");
+                            if (!int.TryParse(Console.ReadLine(), out var k))
+                                return "Invalid k";
 
-                        case "3":
-                            RunWithString("Enter a string to check for unique characters:", s =>
-                                stringsAndArrays.HasAllUniqueCharacters(s)
-                                    ? "All characters are unique."
-                                    : "There are duplicates.");
-                            break;
+                            return $"Maximum vowels in window: {SlidingWindowAlgorithms.MaximumNumberOfVowels(input, k)}";
+                        });
+                        break;
+                    case "14":
+                        RunString("Enter brackets string:", input => StackQueueAlgorithms.ValidateParenthesisStack(input) ? "Valid" : "Invalid");
+                        break;
+                    case "15":
+                        DemoLinqProblems();
+                        break;
+                    case "16":
+                        RunNumbers("Enter comma-separated numbers:", numbers =>
+                        {
+                            Console.Write("Enter target K: ");
+                            if (!int.TryParse(Console.ReadLine(), out var k))
+                                return "Invalid K";
 
-                        case "4":
-                            RunWithString("Enter a string to reverse (Two Pointer):", s =>
-                                $"Reversed: {stringsAndArrays.ReverseString2(s)}");
-                            break;
-
-                        case "5":
-                            RunWithString("Enter a sentence to reverse words:", s =>
-                                $"Reversed: {stringsAndArrays.ReverseWordsSimpleMethod(s)}");
-                            break;
-
-                        case "6":
-                            RunWithString("Enter a sentence to reverse words (Two Pointer):", s =>
-                                $"Reversed: {stringsAndArrays.ReverseWordsTwoPointer(s)}");
-                            break;
-
-                        case "7":
-                            RunWithNumbers("Enter numbers separated by commas:", numbers =>
-                            {
-                                Console.Write("Enter target sum: ");
-                                if (!int.TryParse(Console.ReadLine(), out int target))
-                                {
-                                    return "Invalid target.";
-                                }
-
-                                var res = TwoSumOnePair(numbers, target);
-
-                                return res.Length == 0
-                                    ? "No pair found that sums to the target."
-                                    : $"Indices found: [{res[0]}, {res[1]}]";
-                            });
-                            break;
-
-                        case "8":
-                            RunWithString("Enter words separated by spaces:", s =>
-                            {
-                                var words = s.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                                return $"After removing duplicates: {string.Join(' ', stringsAndArrays.RemoveDuplicates(words))}";
-                            });
-                            break;
-
-                        case "9":
-                            RunWithString("Enter a string to count vowels:", s =>
-                                $"Vowel count: {stringsAndArrays.CountVowels(s)}");
-                            break;
-
-                        case "10":
-                            RunWithString("Enter a string to count each vowel:", s =>
-                            {
-                                var dict = stringsAndArrays.EachCountVowels(s);
-                                return dict.Count == 0
-                                    ? "No vowels found."
-                                    : string.Join(", ", dict.Select(kv => $"{kv.Key}: {kv.Value}"));
-                            });
-                            break;
-
-                        case "11":
-                            RunWithNumbers("Enter numbers separated by commas:", numbers =>
-                                $"Maximum number: {stringsAndArrays.MaximumNumberInAnArray(numbers)}");
-                            break;
-
-                        case "12":
-                            RunWithString("Enter a sentence:", s =>
-                            {
-                                var counts = stringsAndArrays.CounntVowelConstants(s);
-                                return $"Vowels: {counts["vowels"]}, Consonants: {counts["consonants"]}";
-                            });
-                            break;
-
-                        case "13":
-                            RunWithString("Enter a string to reverse manually:", s =>
-                                $"Reversed: {stringsAndArrays.ReverseString2(s)}");
-                            break;
-
-                        case "14":
-                            RunWithString("Enter a string to find first non-repeating character:", s =>
-                                $"First non-repeating character: {stringsAndArrays.FirstNonRepeatingChars(s)}");
-                            break;
-
-                        case "15":
-                            RunWithString("Enter a string to remove all whitespaces:", s =>
-                                $"Cleaned string: \"{stringsAndArrays.RemoveAllWhiteSpaces(s)}\"");
-                            break;
-
-                        case "16":
-                            RunWithString("Enter a sentence to replace vowels with '*':", s =>
-                                $"Result: {stringsAndArrays.ReplaceVowelsWithStar(s)}");
-                            break;
-
-                        case "17":
-                            RunWithString("Enter first string:", "Enter second string:", (s1, s2) =>
-                                stringsAndArrays.IsStringsAnagrams(s1, s2)
-                                    ? "They are anagrams!"
-                                    : "Not anagrams.");
-                            break;
-
-                        case "18":
-                            RunWithString("Enter a sentence:", s =>
-                            {
-                                var longest = stringsAndArrays.LengthLongestWordInASentence(s);
-                                return longest.Value == 0
-                                    ? "No words found."
-                                    : $"Longest word: {longest.Key}, Length: {longest.Value}";
-                            });
-                            break;
-
-                        case "19":
-                            RunWithString("Enter a sentence to convert to Title Case:", s =>
-                                $"Result: {stringsAndArrays.TitleCase(s)}");
-                            break;
-
-                        case "20":
-                            RunWithString("Enter a sentence to count character occurrences:", s =>
-                            {
-                                var occurrences = stringsAndArrays.CharacterOccurrence(s);
-                                return occurrences.Count == 0
-                                    ? "No characters found."
-                                    : string.Join(", ", occurrences.Select(kv => $"{kv.Key}: {kv.Value}"));
-                            });
-                            break;
-
-                        case "21":
-                            RunWithNumbers("Enter numbers separated by commas:", numbers =>
-                            {
-                                var result = stringsAndArrays.MaximumAndMinimumElements(numbers);
-                                return $"Max: {result["max"]}, Min: {result["min"]}";
-                            });
-                            break;
-
-                        case "22":
-                            RunWithNumbers("Enter numbers separated by commas:", numbers =>
-                                $"Average: {stringsAndArrays.AverageOfAllElements(numbers)}");
-                            break;
-
-                        case "23":
-                            RunWithNumbers("Enter numbers separated by commas:", numbers =>
-                            {
-                                var counts = stringsAndArrays.CountOddAndEvenNumbers(numbers);
-                                return $"Odd: {counts["odd"]}, Even: {counts["even"]}";
-                            });
-                            break;
-
-                        case "24":
-                            RunWithNumbers("Enter numbers separated by commas:", numbers =>
-                                $"Second Largest Number: {stringsAndArrays.SecondLargestNumber(numbers)}");
-                            break;
-
-                        case "25":
-                            RunWithString("Enter a sentence to reverse each word while keeping order:", s =>
-                                stringsAndArrays.ReverseWordsKeepSameOrder(s));
-                            break;
-
-                        case "26":
-                            RunWithString("Decode string like 3[a2[b]] -> abbabbabb:", s =>
-                                stringsAndArrays.DecodeString(s));
-                            break;
-
-                        case "27":
-                            RunWithString("Enter a number for recursive sum:", s =>
-                            {
-                                if (!int.TryParse(s, out int n))
-                                    return "Invalid number.";
-
-                                return $"Sum: {Sum(n)}";
-                            });
-                            break;
-
-                        case "28":
-                            RunWithNumbers("Enter numbers separated by commas:", numbers =>
-                            {
-                                Console.Write("Enter target: ");
-                                if (!int.TryParse(Console.ReadLine(), out int target))
-                                {
-                                    return "Invalid target.";
-                                }
-
-                                return $"Total pairs count: {TwoSumCount(numbers, target)}";
-                            });
-                            break;
-
-                        case "29":
-                            RunWithNumbers("Enter numbers separated by commas:", numbers =>
-                            {
-                                Console.Write("Enter target: ");
-                                if (!int.TryParse(Console.ReadLine(), out int target))
-                                {
-                                    return "Invalid target.";
-                                }
-
-                                var result = TwoSumAllUniquePairs(numbers, target);
-
-                                return result.Count == 0
-                                    ? "No pairs found."
-                                    : $"Unique value pairs: {string.Join(", ", result.Select(x => $"({x.Item1}, {x.Item2})"))}";
-                            });
-                            break;
-
-                        case "30":
-                            RunWithNumbers("Enter numbers separated by commas:", numbers =>
-                            {
-                                Console.Write("Enter target: ");
-                                if (!int.TryParse(Console.ReadLine(), out int target))
-                                {
-                                    return "Invalid target.";
-                                }
-
-                                var result = TwoSumAllIndexPairs(numbers, target);
-
-                                return result.Count == 0
-                                    ? "No pairs found."
-                                    : $"Index pairs: {string.Join(", ", result.Select(x => $"({x.Item1}, {x.Item2})"))}";
-                            });
-                            break;
-
-                        case "31":
-                            RunWithNumbers("Enter numbers separated by commas:", numbers =>
-                            {
-                                Console.Write("Enter target: ");
-                                if (!int.TryParse(Console.ReadLine(), out int target))
-                                {
-                                    return "Invalid target.";
-                                }
-
-                                var result = TwoSumClosest(numbers, target);
-                                return $"Closest pair: ({result.Item1}, {result.Item2})";
-                            });
-                            break;
-
-                        case "32":
-                            RunWithNumbers("Enter numbers separated by commas:", numbers =>
-                            {
-                                Console.Write("Enter target sum (K): ");
-                                if (!int.TryParse(Console.ReadLine(), out int k))
-                                {
-                                    return "Invalid target.";
-                                }
-
-                                return $"Subarrays count: {SubarraySumEqualsK(numbers, k)}";
-                            });
-                            break;
-
-                        default:
-                            Console.WriteLine("Invalid choice. Try again.");
-                            break;
-                    }
+                            return $"Subarray count: {PrefixSumAlgorithms.SubarraySumEqualsK(numbers, k)}";
+                        });
+                        break;
+                    case "17":
+                        RunStringPair("Enter first string:", "Enter second string:", (a, b) => StringAlgorithms.IsStringsAnagrams(a, b) ? "Anagrams" : "Not anagrams");
+                        break;
+                    case "18":
+                        RunString("Enter sentence:", input =>
+                        {
+                            var result = StringAlgorithms.LengthLongestWordInASentence(input);
+                            return result.Value == 0 ? "No word found" : $"Longest word: {result.Key}, Length: {result.Value}";
+                        });
+                        break;
+                    case "19":
+                        RunString("Enter sentence:", input =>
+                        {
+                            var result = StringAlgorithms.CharacterOccurrence(input);
+                            return result.Count == 0 ? "No characters found" : string.Join(", ", result.Select(x => $"{x.Key}:{x.Value}"));
+                        });
+                        break;
+                    case "20":
+                        RunString("Enter encoded string e.g. 3[a2[b]]:", input => $"Decoded: {StringAlgorithms.DecodeString(input)}");
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice.");
+                        break;
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Unexpected error: {ex.Message}");
-                }
-            }
-        }
-
-        // --- Helpers ---
-        public static void File2()
-        {
-            var path = "C:\\" + "Directory";
-            var directory = new DirectoryInfo(path);
-
-            if (!directory.Exists)
-            {
-                directory.Create();
-            }
-
-            if (!Directory.Exists(Path.Combine(path, "Home1")))
-                directory.CreateSubdirectory("Home1");
-
-            if (!Directory.Exists(Path.Combine(path, "Home2")))
-                directory.CreateSubdirectory("Home2");
-
-            if (!Directory.Exists(Path.Combine(path, "Home3")))
-                directory.CreateSubdirectory("Home3");
-
-            directory.CreationTime = DateTime.Now.AddDays(1);
-
-            if (!Directory.Exists(Path.Combine(path, "Home4")))
-                directory.CreateSubdirectory("Home4");
-        }
-
-        private static void RunWithString(string prompt, Func<string, string> operation)
-        {
-            Console.Write(prompt + " ");
-            var input = (Console.ReadLine() ?? string.Empty).Trim();
-
-            if (string.IsNullOrEmpty(input))
-            {
-                Console.WriteLine("Input cannot be empty.");
-                return;
-            }
-
-            try
-            {
-                Console.WriteLine(operation(input));
             }
             catch (Exception ex)
             {
@@ -395,252 +141,78 @@ namespace Practice
             }
         }
 
-        private static void RunWithString(string prompt1, string prompt2, Func<string, string, string> operation)
-        {
-            Console.Write(prompt1 + " ");
-            var input1 = (Console.ReadLine() ?? string.Empty).Trim();
+        Console.WriteLine("Goodbye!");
+    }
 
-            if (string.IsNullOrEmpty(input1))
-            {
-                Console.WriteLine("Input cannot be empty.");
-                return;
-            }
+    private static void ShowMenuMain()
+    {
+        Console.WriteLine();
+        Console.WriteLine("================ PRACTICE SUITE ================");
+        Console.WriteLine("1  - Reverse string");
+        Console.WriteLine("2  - Check palindrome");
+        Console.WriteLine("3  - Check unique characters");
+        Console.WriteLine("4  - Reverse words in sentence");
+        Console.WriteLine("5  - Convert to title case");
+        Console.WriteLine("6  - Count vowels");
+        Console.WriteLine("7  - Two Sum (indices)");
+        Console.WriteLine("8  - Maximum element");
+        Console.WriteLine("9  - Second largest number");
+        Console.WriteLine("10 - Maximum and minimum elements");
+        Console.WriteLine("11 - Maximum subarray sum of size K");
+        Console.WriteLine("12 - Count subarrays of size K with sum >= target");
+        Console.WriteLine("13 - Maximum vowels in substring of size K");
+        Console.WriteLine("14 - Validate parentheses using stack");
+        Console.WriteLine("15 - LINQ demo");
+        Console.WriteLine("16 - Subarray sum equals K");
+        Console.WriteLine("17 - Check anagrams");
+        Console.WriteLine("18 - Longest word in sentence");
+        Console.WriteLine("19 - Character occurrence count");
+        Console.WriteLine("20 - Decode string");
+        Console.WriteLine("Q  - Quit");
+    }
 
-            Console.Write(prompt2 + " ");
-            var input2 = (Console.ReadLine() ?? string.Empty).Trim();
+    private static void RunString(string prompt, Func<string, string> operation)
+    {
+        Console.Write(prompt + " ");
+        var input = Console.ReadLine() ?? string.Empty;
+        Console.WriteLine(operation(input));
+    }
 
-            if (string.IsNullOrEmpty(input2))
-            {
-                Console.WriteLine("Input cannot be empty.");
-                return;
-            }
+    private static void RunStringPair(string prompt1, string prompt2, Func<string, string, string> operation)
+    {
+        Console.Write(prompt1 + " ");
+        var input1 = Console.ReadLine() ?? string.Empty;
+        Console.Write(prompt2 + " ");
+        var input2 = Console.ReadLine() ?? string.Empty;
+        Console.WriteLine(operation(input1, input2));
+    }
 
-            try
-            {
-                Console.WriteLine(operation(input1, input2));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
-        }
+    private static void RunNumbers(string prompt, Func<int[], string> operation)
+    {
+        Console.Write(prompt + " ");
+        var input = Console.ReadLine() ?? string.Empty;
+        var numbers = ParseNumbers(input);
+        Console.WriteLine(operation(numbers));
+    }
 
-        private static void RunWithNumbers(string prompt, Func<int[], string> operation)
-        {
-            Console.Write(prompt + " ");
-            var input = (Console.ReadLine() ?? string.Empty).Trim();
-
-            if (string.IsNullOrEmpty(input))
-            {
-                Console.WriteLine("Input cannot be empty.");
-                return;
-            }
-
-            try
-            {
-                var numbers = input
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(x => int.Parse(x.Trim()))
-                    .ToArray();
-
-                Console.WriteLine(operation(numbers));
-            }
-            catch
-            {
-                Console.WriteLine("Invalid number format.");
-            }
-        }
-
-        // --- Generic / Practice ---
-        public static ArrayList TestsResponseService()
-        {
-            var obj = new object();
-
-            var arraylist = new ArrayList();
-            arraylist.Add("one");
-            arraylist.Add(1);
-            arraylist.Add(obj);
-
-            return arraylist;
-        }
-
-        public static List<object> TestsResponseService(List<object> list)
-        {
-            list.Add("one");
-            list.Add(1);
-
-            return list;
-        }
-
-        public class Response<T>
-        {
-            public int Status { get; set; }
-            public string Message { get; set; } = string.Empty;
-            public T? Data { get; set; }
-        }
-
-        public static int Sum(int n)
-        {
-            if (n == 0)
-                return 0;
-
-            return n + Sum(n - 1);
-        }
-
-        // --- Two Sum Variants ---
-
-        public static int[] TwoSumOnePair(int[] nums, int target)
-        {
-            var map = new Dictionary<int, int>();
-
-            for (int i = 0; i < nums.Length; i++)
-            {
-                int complement = target - nums[i];
-
-                if (map.TryGetValue(complement, out var index))
-                {
-                    return new[] { index, i };
-                }
-
-                map[nums[i]] = i;
-            }
-
+    private static int[] ParseNumbers(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
             return Array.Empty<int>();
-        }
 
-        public static int TwoSumCount(int[] nums, int target)
-        {
-            var map = new HashSet<int>();
-            var result = new List<(int,int)>();    
-            int count = 0;
+        return input.Split(',', StringSplitOptions.RemoveEmptyEntries)
+            .Select(x => int.Parse(x.Trim()))
+            .ToArray();
+    }
 
-            foreach (var num in nums)
-            {
-                int complement = target - num;
+    private static void DemoLinqProblems()
+    {
+        var nums = new List<int> { 1, 2, 3, 4, 5, 6, 10, 20 };
+        var words = new List<string> { "apple", "go", "banana", "ant", "azure" };
 
-                if (map.Contains(complement))
-                {
-                    result.Add((num, complement));
-                    count++;
-                }
-
-                map.Add(complement);
-            }
-
-            return result.Select(x => x.Item2).Sum();
-        }
-
-        public static HashSet<(int, int)> TwoSumAllUniquePairs(int[] nums, int target)
-        {
-            var seen = new HashSet<int>();
-            var result = new HashSet<(int, int)>();
-
-            foreach (var num in nums)
-            {
-                int complement = target - num;
-
-                if (seen.Contains(complement))
-                {
-                    result.Add((Math.Min(num, complement), Math.Max(num, complement)));
-                }
-
-                seen.Add(num);
-            }
-
-            return result;
-        }
-
-        public static List<(int, int)> TwoSumAllIndexPairs(int[] nums, int target)
-        {
-            var map = new Dictionary<int, List<int>>();
-            var result = new List<(int, int)>();
-
-            for (int i = 0; i < nums.Length; i++)
-            {
-                int complement = target - nums[i];
-
-                if (map.TryGetValue(complement, out var indices))
-                {
-                    foreach (var j in indices)
-                    {
-                        result.Add((j, i));
-                    }
-                }
-
-                if (!map.ContainsKey(nums[i]))
-                {
-                    map[nums[i]] = new List<int>();
-                }
-
-                map[nums[i]].Add(i);
-            }
-
-            return result;
-        }
-
-        public static (int, int) TwoSumClosest(int[] nums, int target)
-        {
-            if (nums == null || nums.Length < 2)
-            {
-                return (0, 0);
-            }
-
-            var sorted = nums.ToArray();
-            Array.Sort(sorted);
-
-            int left = 0;
-            int right = sorted.Length - 1;
-            int minDiff = int.MaxValue;
-            (int, int) result = (sorted[left], sorted[right]);
-
-            while (left < right)
-            {
-                int sum = sorted[left] + sorted[right];
-                int diff = Math.Abs(target - sum);
-
-                if (diff < minDiff)
-                {
-                    minDiff = diff;
-                    result = (sorted[left], sorted[right]);
-                }
-
-                if (sum < target)
-                {
-                    left++;
-                }
-                else
-                {
-                    right--;
-                }
-            }
-
-            return result;
-        }
-
-        // --- Prefix Sum / Advanced ---
-        public static int SubarraySumEqualsK(int[] nums, int k)
-        {
-            var map = new Dictionary<int, int>
-            {
-                [0] = 1
-            };
-
-            int sum = 0;
-            int count = 0;
-
-            foreach (var num in nums)
-            {
-                sum += num;
-
-                if (map.TryGetValue(sum - k, out var freq))
-                {
-                    count += freq;
-                }
-
-                map[sum] = map.GetValueOrDefault(sum, 0) + 1;
-            }
-
-            return count;
-        }
+        Console.WriteLine("Even numbers: " + string.Join(", ", LinqProblems.EvenNumbers(nums)));
+        Console.WriteLine("Squares: " + string.Join(", ", LinqProblems.TransformIntToSquares(nums)));
+        Console.WriteLine("Strings length > 3: " + string.Join(", ", LinqProblems.StringLengthGreaterThan3(words)));
+        Console.WriteLine("Start with A: " + string.Join(", ", LinqProblems.StartWithLetterA(words)));
     }
 }
